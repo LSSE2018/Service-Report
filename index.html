@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surveillance Report | LAXMI SECURITY SYSTEMS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @media print {
+            body {
+                width: 210mm;
+                height: 297mm;
+                margin: 0;
+                padding: 0;
+            }
+            .print-container {
+                width: 100%;
+                height: 100%;
+                padding: 15mm;
+                box-sizing: border-box;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .break-after {
+                page-break-after: always;
+            }
+            .break-before {
+                page-break-before: always;
+            }
+            .break-inside {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto px-4 py-8 max-w-6xl no-print">
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Enter Report Details</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Service Support Mobile No:</label>
+                    <input type="text" id="supportMobile" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Engineer Name:</label>
+                    <input type="text" id="engineerName" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Starting Date:</label>
+                    <input type="date" id="startDate" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Completion Date:</label>
+                    <input type="date" id="completionDate" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Customer Name & Address:</label>
+                    <textarea id="customerAddress" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">SPOC Name:</label>
+                    <input type="text" id="spocName" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">SPOC Contact No:</label>
+                    <input type="text" id="spocContact" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">PO Code:</label>
+                    <input type="text" id="poCode" class="w-full px-3 py-2 border border-gray-300 rounded-md">
+                </div>
+            </div>
+            <button onclick="generateReport()" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                Generate Report
+            </button>
+        </div>
+    </div>
+
+    <div id="report-container" class="hidden print-container">
+        <!-- Header -->
+        <header class="flex justify-between items-start mb-4">
+            <div>
+                <div class="flex items-center mb-2">
+                    <img id="company-logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiMxZTQwOGYiLz48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzMCIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik01MCAzMEMzNSAzMCAyNSA0MCAyNSA1MHMxMCAyMCAyNSAyMCAyNS0xMCAyNS0yMFM2NSAzMCA1MCAzMHptMCAzMGMtNSAwLTEwLTUtMTAtMTBzNS0xMCAxMC0xMCAxMCA1IDEwIDEwLTUgMTAtMTAgMTB6IiBmaWxsPSIjMWU0MDhmIi8+PC9zdmc+" alt="Company Logo" class="h-16 w-auto">
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800">Surveillance Report</h1>
+                <p class="text-sm text-gray-600">LAXMI SECURITY SYSTEMS AND ELECTRICALS</p>
+            </div>
+            <div class="text-right">
+                <p class="text-sm"><span class="font-medium">Date:</span> <span id="report-date"></span></p>
+                <p class="text-sm"><span class="font-medium">Report No:</span> <span id="report-number">SR-2023-001</span></p>
+            </div>
+        </header>
+
+        <!-- Customer Info -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 text-sm">
+            <div>
+                <p><span class="font-medium">Service Support Mobile No:</span> <span id="display-supportMobile"></span></p>
+                <p><span class="font-medium">Engineer Name:</span> <span id="display-engineerName"></span></p>
+            </div>
+            <div>
+                <p><span class="font-medium">Starting Date:</span> <span id="display-startDate"></span></p>
+                <p><span class="font-medium">Completion Date:</span> <span id="display-completionDate"></span></p>
+            </div>
+            <div class="md:col-span-2">
+                <p><span class="font-medium">Customer Name & Address:</span> <span id="display-customerAddress"></span></p>
+            </div>
+            <div>
+                <p><span class="font-medium">SPOC Name:</span> <span id="display-spocName"></span></p>
+                <p><span class="font-medium">Contact No:</span> <span id="display-spocContact"></span></p>
+            </div>
+            <div>
+                <p><span class="font-medium">PO Code:</span> <span id="display-poCode"></span></p>
+            </div>
+        </div>
+
+        <!-- System Details -->
+        <h2 class="text-lg font-semibold border-b border-gray-300 mb-2">Position/Location/Type of Connections of the System</h2>
+        <table class="w-full text-sm mb-4">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="text-left py-1 px-2 border border-gray-300">S.N</th>
+                    <th class="text-left py-1 px-2 border border-gray-300">Particulars</th>
+                    <th class="text-left py-1 px-2 border border-gray-300">Remark</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">1</td>
+                    <td class="py-1 px-2 border border-gray-300">Cable Connections / Continuity / Crimping Check of Entire</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">2</td>
+                    <td class="py-1 px-2 border border-gray-300">Mounting height of Cameras/ NVR/DVR/SWITCH Setup Point</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">3</td>
+                    <td class="py-1 px-2 border border-gray-300">No of Cameras/NVR/DVR/SWITCH Available</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">4</td>
+                    <td class="py-1 px-2 border border-gray-300">All Ethernet /Coaxial cabling was routed through conduits.</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">5</td>
+                    <td class="py-1 px-2 border border-gray-300">Locations Covering all areas / Client Specified Locations</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">6</td>
+                    <td class="py-1 px-2 border border-gray-300">Fov Adjustments as per the Standards.</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">7</td>
+                    <td class="py-1 px-2 border border-gray-300">Type of Cameras used weather it is Outdoor/Indoor</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">8</td>
+                    <td class="py-1 px-2 border border-gray-300">UPS Power Supply Available if any</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">9</td>
+                    <td class="py-1 px-2 border border-gray-300">Raw Power Supply weather it is Mains/Switch Controlled.</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">10</td>
+                    <td class="py-1 px-2 border border-gray-300">Internet Connection weather it is Wifi/Lan Cable</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Technical Parameters -->
+        <h2 class="text-lg font-semibold border-b border-gray-300 mb-2">Technical Parameters of the System</h2>
+        <table class="w-full text-sm mb-4">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="text-left py-1 px-2 border border-gray-300">S.N</th>
+                    <th class="text-left py-1 px-2 border border-gray-300">Particulars</th>
+                    <th class="text-left py-1 px-2 border border-gray-300">Remark</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">1</td>
+                    <td class="py-1 px-2 border border-gray-300">IP Address of the DVR/HVR/NVR/IPC</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">2</td>
+                    <td class="py-1 px-2 border border-gray-300">Software Version/Build Version firmware</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">3</td>
+                    <td class="py-1 px-2 border border-gray-300">No.of Devices Connected with IP'S</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">4</td>
+                    <td class="py-1 px-2 border border-gray-300">HDD SMART Check / Condition or Status</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">5</td>
+                    <td class="py-1 px-2 border border-gray-300">CMS Live/ Local Monitoring Configuration</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">6</td>
+                    <td class="py-1 px-2 border border-gray-300">Motion alerts tested on select Cameras</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">7</td>
+                    <td class="py-1 px-2 border border-gray-300">Frame rate/Resolution /Frame rate Configured to</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">8</td>
+                    <td class="py-1 px-2 border border-gray-300">User accounts created with role-based access control.</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">9</td>
+                    <td class="py-1 px-2 border border-gray-300">Date and time synchronized via NTP server</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">10</td>
+                    <td class="py-1 px-2 border border-gray-300">Recording Checking - Continue or Motion</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">11</td>
+                    <td class="py-1 px-2 border border-gray-300">Make of IPC/NVR/DVR/HVR/NVR/Switch with Model No.</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">12</td>
+                    <td class="py-1 px-2 border border-gray-300">Quantity of Devices Available</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- User Experience -->
+        <h2 class="text-lg font-semibold border-b border-gray-300 mb-2">Testing & Commissioning of User Experience</h2>
+        <table class="w-full text-sm mb-6">
+            <tbody>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300 w-5/6">Video/ Audio feed verified from each camera</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">Day/Night vision with Color if tested and confirmed</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">Remote access tested on mobile and desktop or Android Tv</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">Active Defense / Detectors tested on select cameras</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+                <tr>
+                    <td class="py-1 px-2 border border-gray-300">User Training for Live,Playback,Backup Exporting,Troubleshoot</td>
+                    <td class="py-1 px-2 border border-gray-300"><input type="text" class="w-full p-1 border-0" placeholder="Enter remark"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Footer with Signatures -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <div>
+                <p class="font-medium mb-2">LSSE Remark:</p>
+                <div class="h-16 border-b border-gray-400"></div>
+            </div>
+            <div>
+                <div class="flex justify-between">
+                    <div>
+                        <p class="text-sm mb-6">Customer Sign and Stamp</p>
+                        <div class="h-16 border-b border-gray-400 relative">
+                            <div class="absolute -bottom-1 right-0 text-xs text-gray-500">Date: <span id="sign-date"></span></div>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-sm mb-6">Engineer Name & Sign</p>
+                        <div class="h-16 border-b border-gray-400"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stamp Placeholder -->
+        <div class="flex justify-end mt-4">
+            <div class="border-2 border-dashed border-gray-400 rounded-full h-24 w-24 flex items-center justify-center text-xs text-gray-500 text-center p-2">
+                Company Stamp Here
+            </div>
+        </div>
+
+        <!-- Print Button -->
+        <div class="no-print mt-6 flex justify-end">
+            <button onclick="window.print()" class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <i class="fas fa-print mr-2"></i>
+                Print Report
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function generateReport() {
+            // Get form values
+            const supportMobile = document.getElementById('supportMobile').value;
+            const engineerName = document.getElementById('engineerName').value;
+            const startDate = document.getElementById('startDate').value;
+            const completionDate = document.getElementById('completionDate').value;
+            const customerAddress = document.getElementById('customerAddress').value;
+            const spocName = document.getElementById('spocName').value;
+            const spocContact = document.getElementById('spocContact').value;
+            const poCode = document.getElementById('poCode').value;
+
+            // Set display values
+            document.getElementById('display-supportMobile').textContent = supportMobile;
+            document.getElementById('display-engineerName').textContent = engineerName;
+            document.getElementById('display-startDate').textContent = formatDate(startDate);
+            document.getElementById('display-completionDate').textContent = formatDate(completionDate);
+            document.getElementById('display-customerAddress').textContent = customerAddress;
+            document.getElementById('display-spocName').textContent = spocName;
+            document.getElementById('display-spocContact').textContent = spocContact;
+            document.getElementById('display-poCode').textContent = poCode;
+
+            // Set current date
+            const today = new Date();
+            document.getElementById('report-date').textContent = formatDate(today.toISOString().split('T')[0]);
+            document.getElementById('sign-date').textContent = formatDate(today.toISOString().split('T')[0]);
+
+            // Show report
+            document.getElementById('report-container').classList.remove('hidden');
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        // Function to handle logo upload
+        document.getElementById('logo-upload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('company-logo').src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
